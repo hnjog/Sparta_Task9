@@ -6,6 +6,9 @@
 #include "GameFramework/PlayerController.h"
 #include "TaskPlayerController.generated.h"
 
+
+class UTaskChatInput;
+
 /**
  * 
  */
@@ -13,5 +16,14 @@ UCLASS()
 class TASKNUMBASE_API ATaskPlayerController : public APlayerController
 {
 	GENERATED_BODY()
-	
+
+public:
+	virtual void BeginPlay() override;
+
+protected:
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<UTaskChatInput> ChatInputWidgetClass;
+
+	UPROPERTY()
+	TObjectPtr<UTaskChatInput> ChatInputWidgetInstance;
 };
