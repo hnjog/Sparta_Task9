@@ -3,6 +3,7 @@
 
 #include "Player/TaskPlayerController.h"
 #include "UI/TaskChatInput.h"
+#include "Kismet/KismetSystemLibrary.h"
 
 void ATaskPlayerController::BeginPlay()
 {
@@ -19,4 +20,15 @@ void ATaskPlayerController::BeginPlay()
 			ChatInputWidgetInstance->AddToViewport();
 		}
 	}
+}
+
+void ATaskPlayerController::SetChatMessageString(const FString& InChatMessageString)
+{
+	ChatMessageString = InChatMessageString;
+	PrintChatMessageString(ChatMessageString);
+}
+
+void ATaskPlayerController::PrintChatMessageString(const FString& InChatMessageString)
+{
+	UKismetSystemLibrary::PrintString(this, ChatMessageString, true, true, FLinearColor::Red, 5.0f);
 }

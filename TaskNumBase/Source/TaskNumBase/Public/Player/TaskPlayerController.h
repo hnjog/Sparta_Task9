@@ -20,10 +20,17 @@ class TASKNUMBASE_API ATaskPlayerController : public APlayerController
 public:
 	virtual void BeginPlay() override;
 
+	void SetChatMessageString(const FString& InChatMessageString);
+
+	void PrintChatMessageString(const FString& InChatMessageString);
+
 protected:
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UTaskChatInput> ChatInputWidgetClass;
 
 	UPROPERTY()
 	TObjectPtr<UTaskChatInput> ChatInputWidgetInstance;
+
+	FString ChatMessageString;
+
 };

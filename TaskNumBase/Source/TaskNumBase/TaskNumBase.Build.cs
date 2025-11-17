@@ -16,6 +16,8 @@ public class TaskNumBase : ModuleRules
             "EnhancedInput",
             // UI
             "UMG",
+            "Slate",
+            "SlateCore",
         });
 
         PrivateDependencyModuleNames.AddRange(new string[] { });
