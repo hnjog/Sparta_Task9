@@ -35,7 +35,5 @@ void ATaskPlayerController::SetChatMessageString(const FString& InChatMessageStr
 
 void ATaskPlayerController::PrintChatMessageString(const FString& InChatMessageString)
 {
-	FString NetModeString = TaskNumBaseFunctionLibrary::GetNetModeString(this);
-	FString CombinedMessageString = FString::Printf(TEXT("%s: %s"), *NetModeString, *InChatMessageString);
-	TaskNumBaseFunctionLibrary::MyPrintString(this, CombinedMessageString, 10.f);
+	TaskNumBaseFunctionLibrary::MyPrintString(this, InChatMessageString, 10.f);
 }
