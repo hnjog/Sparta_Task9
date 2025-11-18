@@ -3,7 +3,7 @@
 
 #include "Player/TaskPlayerController.h"
 #include "UI/TaskChatInput.h"
-#include "Kismet/KismetSystemLibrary.h"
+#include "TaskNumBase.h"
 
 void ATaskPlayerController::BeginPlay()
 {
@@ -35,5 +35,7 @@ void ATaskPlayerController::SetChatMessageString(const FString& InChatMessageStr
 
 void ATaskPlayerController::PrintChatMessageString(const FString& InChatMessageString)
 {
-	UKismetSystemLibrary::PrintString(this, ChatMessageString, true, true, FLinearColor::Red, 5.0f);
+	FString NetModeString = TaskNumBaseFunctionLibrary::GetNetModeString(this);
+	FString CombinedMessageString = FString::Printf(TEXT("%s: %s"), *NetModeString, *InChatMessageString);
+	TaskNumBaseFunctionLibrary::MyPrintString(this, CombinedMessageString, 10.f);
 }
