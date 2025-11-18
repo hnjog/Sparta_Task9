@@ -9,6 +9,11 @@ void ATaskPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 
+	if (IsLocalController() == false)
+	{
+		return;
+	}
+
 	FInputModeUIOnly InputModeUIOnly;
 	SetInputMode(InputModeUIOnly);
 
