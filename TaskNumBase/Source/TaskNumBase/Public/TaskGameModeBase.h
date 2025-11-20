@@ -13,5 +13,6 @@ UCLASS()
 class TASKNUMBASE_API ATaskGameModeBase : public AGameModeBase
 {
 	GENERATED_BODY()
-	
+public:
+	virtual void OnPostLogin(AController* NewPlayer) override;
 };
