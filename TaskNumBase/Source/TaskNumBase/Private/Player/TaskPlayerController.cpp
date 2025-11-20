@@ -7,6 +7,7 @@
 #include "EngineUtils.h"
 #include "Kismet/GameplayStatics.h"
 #include "TaskGameModeBase.h"
+#include "Player/TaskPlayerState.h"
 
 void ATaskPlayerController::BeginPlay()
 {
@@ -36,7 +37,13 @@ void ATaskPlayerController::SetChatMessageString(const FString& InChatMessageStr
 
 	if (IsLocalController() == true)
 	{
-		ServerRPCPrintChatMessageString(InChatMessageString);
+		ATaskPlayerState* TPS = GetPlayerState<ATaskPlayerState>();
+		if (IsValid(TPS) == true)
+		{
+			FString CombineMsg = TPS->PlayerNameString + TEXT(": ") + InChatMessageString;
+
+			ServerRPCPrintChatMessageString(CombineMsg);
+		}
 	}
 }
 

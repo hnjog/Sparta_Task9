@@ -4,22 +4,29 @@
 #include "TaskGameModeBase.h"
 #include "TaskGameStateBase.h"
 #include "Player/TaskPlayerController.h"
+#include "Player/TaskPlayerState.h"
 #include "EngineUtils.h"
 
 void ATaskGameModeBase::OnPostLogin(AController* NewPlayer)
 {
 	Super::OnPostLogin(NewPlayer);
 
-	ATaskGameStateBase* TaskStateBase = GetGameState<ATaskGameStateBase>();
-	if (IsValid(TaskStateBase) == true)
-	{
-		TaskStateBase->MulticastRPCBroadcastLoginMessage(TEXT("XXXXXXX"));
-	}
-
 	ATaskPlayerController* TPC = Cast<ATaskPlayerController>(NewPlayer);
 	if (IsValid(TPC) == true)
 	{
 		AllPlayerControllers.Add(TPC);
+
+		ATaskPlayerState* TPS = TPC->GetPlayerState<ATaskPlayerState>();
+		if (IsValid(TPS) == true)
+		{
+			TPS->PlayerNameString = TEXT("Player") + FString::FromInt(AllPlayerControllers.Num());
+		}
+
+		ATaskGameStateBase* TaskGameStateBase = GetGameState<ATaskGameStateBase>();
+		if (IsValid(TaskGameStateBase) == true)
+		{
+			TaskGameStateBase->MulticastRPCBroadcastLoginMessage(TPS->PlayerNameString);
+		}
 	}
 }
 
