@@ -5,6 +5,8 @@
 #include "UI/TaskChatInput.h"
 #include "TaskNumBase.h"
 #include "EngineUtils.h"
+#include "Kismet/GameplayStatics.h"
+#include "TaskGameModeBase.h"
 
 void ATaskPlayerController::BeginPlay()
 {
@@ -54,12 +56,14 @@ void ATaskPlayerController::ServerRPCPrintChatMessageString_Implementation(const
 	// NetMulticast??
 	// - 이건 '클라'에서 호출되는 함수이기에,
 	//   내 pc와 서버에서만 실행되게 됨
-	for (TActorIterator<ATaskPlayerController> It(GetWorld()); It; ++It)
+
+	AGameModeBase* GM = UGameplayStatics::GetGameMode(this);
+	if (IsValid(GM) == true)
 	{
-		ATaskPlayerController* TaskPlayerController = *It;
-		if (IsValid(TaskPlayerController) == true)
+		ATaskGameModeBase* TGM = Cast<ATaskGameModeBase>(GM);
+		if (IsValid(TGM) == true)
 		{
-			TaskPlayerController->ClientRPCPrintChatMessageString(InChatMessageString);
+			TGM->PrintChatMessageString(this, InChatMessageString);
 		}
 	}
 }
