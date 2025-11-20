@@ -31,7 +31,6 @@ void ATaskPlayerController::BeginPlay()
 void ATaskPlayerController::SetChatMessageString(const FString& InChatMessageString)
 {
 	ChatMessageString = InChatMessageString;
-	//PrintChatMessageString(ChatMessageString);
 
 	if (IsLocalController() == true)
 	{
@@ -44,12 +43,12 @@ void ATaskPlayerController::PrintChatMessageString(const FString& InChatMessageS
 	TaskNumBaseFunctionLibrary::MyPrintString(this, InChatMessageString, 10.f);
 }
 
-void ATaskPlayerController::ServerRPCPrintChatMessageString_Implementation(const FString& InChatMessageString)
+void ATaskPlayerController::ClientRPCPrintChatMessageString_Implementation(const FString& InChatMessageString)
 {
-	PrintChatMessageString(ChatMessageString);
+	PrintChatMessageString(InChatMessageString);
 }
 
-void ATaskPlayerController::ClientRPCPrintChatMessageString_Implementation(const FString& InChatMessageString)
+void ATaskPlayerController::ServerRPCPrintChatMessageString_Implementation(const FString& InChatMessageString)
 {
 	// Server에서 Clinet 쪽으로 일일이 뿌림
 	// NetMulticast??
