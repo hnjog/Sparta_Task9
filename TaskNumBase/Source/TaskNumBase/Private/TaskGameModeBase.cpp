@@ -19,13 +19,13 @@ void ATaskGameModeBase::OnPostLogin(AController* NewPlayer)
 		ATaskPlayerState* TPS = TPC->GetPlayerState<ATaskPlayerState>();
 		if (IsValid(TPS) == true)
 		{
-			TPS->PlayerNameString = TEXT("Player") + FString::FromInt(AllPlayerControllers.Num());
+			TPS->SetPlayerName(TEXT("Player") + FString::FromInt(AllPlayerControllers.Num()));
 		}
 
 		ATaskGameStateBase* TaskGameStateBase = GetGameState<ATaskGameStateBase>();
 		if (IsValid(TaskGameStateBase) == true)
 		{
-			TaskGameStateBase->MulticastRPCBroadcastLoginMessage(TPS->PlayerNameString);
+			TaskGameStateBase->MulticastRPCBroadcastLoginMessage(TPS->GetPlayerName());
 		}
 	}
 }
@@ -134,6 +134,9 @@ void ATaskGameModeBase::PrintChatMessageString(ATaskPlayerController* InChatting
 	if (IsGuessNumberString(GuessNumberString) == true)
 	{
 		FString JudgeResultString = JudgeResult(SecretNumberString, GuessNumberString);
+
+		IncreaseGuessCount(InChattingPlayerController);
+
 		for (TActorIterator<ATaskPlayerController> It(GetWorld()); It; ++It)
 		{
 			ATaskPlayerController* TPC = *It;
@@ -154,5 +157,14 @@ void ATaskGameModeBase::PrintChatMessageString(ATaskPlayerController* InChatting
 				TPC->ClientRPCPrintChatMessageString(InChatMessageString);
 			}
 		}
+	}
+}
+
+void ATaskGameModeBase::IncreaseGuessCount(ATaskPlayerController* InChattingPlayerController)
+{
+	ATaskPlayerState* TPS = InChattingPlayerController->GetPlayerState<ATaskPlayerState>();
+	if (IsValid(TPS) == true)
+	{
+		TPS->AddGuessCount();
 	}
 }

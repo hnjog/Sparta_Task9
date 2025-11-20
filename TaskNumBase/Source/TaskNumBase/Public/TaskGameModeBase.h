@@ -28,6 +28,7 @@ public:
 	
 	void PrintChatMessageString(ATaskPlayerController* InChattingPlayerController, const FString& InChatMessageString);
 
+	void IncreaseGuessCount(ATaskPlayerController* InChattingPlayerController);
 protected:
 	FString SecretNumberString;
 

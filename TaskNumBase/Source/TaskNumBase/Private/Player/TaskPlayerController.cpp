@@ -40,7 +40,7 @@ void ATaskPlayerController::SetChatMessageString(const FString& InChatMessageStr
 		ATaskPlayerState* TPS = GetPlayerState<ATaskPlayerState>();
 		if (IsValid(TPS) == true)
 		{
-			FString CombineMsg = TPS->PlayerNameString + TEXT(": ") + InChatMessageString;
+			FString CombineMsg = TPS->GetPlayerInfoString() + TEXT(": ") + InChatMessageString;
 
 			ServerRPCPrintChatMessageString(CombineMsg);
 		}

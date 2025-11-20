@@ -20,7 +20,26 @@ public:
 	// Replicated 선언된 변수들을 엔진이 처리하도록 등록함
 	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
 
+	FString GetPlayerInfoString();
+
+public:
+	FORCEINLINE void SetPlayerName(const FString& NameString) { PlayerNameString = NameString; }
+
+	FORCEINLINE const FString& GetPlayerName() { return PlayerNameString; }
+
+	FORCEINLINE int32 GetPlayerNowGuessCount() { return CurrentGuessCount; }
+	FORCEINLINE int32 GetPlayerMaxGuessCount() { return MaxGuessCount; }
+
+public:
+	bool AddGuessCount();
+
 public:
 	UPROPERTY(Replicated)
 	FString PlayerNameString;
+
+	UPROPERTY(Replicated)
+	int32 CurrentGuessCount;
+
+	UPROPERTY(Replicated)
+	int32 MaxGuessCount;
 };
