@@ -28,6 +28,8 @@ void ATaskGameModeBase::BeginPlay()
 	Super::BeginPlay();
 
 	SecretNumberString = GenerateSecretNumber();
+
+	UE_LOG(LogTemp, Error, TEXT("%s"), *SecretNumberString);
 }
 
 FString ATaskGameModeBase::GenerateSecretNumber()
