@@ -146,6 +146,9 @@ void ATaskGameModeBase::PrintChatMessageString(ATaskPlayerController* InChatting
 			{
 				FString CombinedMessageString = InChatMessageString + TEXT(" -> ") + JudgeResultString;
 				TPC->ClientRPCPrintChatMessageString(CombinedMessageString);
+
+				int32 StrikeCount = FCString::Atoi(*JudgeResultString.Left(1));
+				JudgeGame(InChattingPlayerController, StrikeCount);
 			}
 		}
 	}
@@ -168,5 +171,63 @@ void ATaskGameModeBase::IncreaseGuessCount(ATaskPlayerController* InChattingPlay
 	if (IsValid(TPS) == true)
 	{
 		TPS->AddGuessCount();
+	}
+}
+
+void ATaskGameModeBase::ResetGame()
+{
+	SecretNumberString = GenerateSecretNumber();
+
+	for (const auto& TPC : AllPlayerControllers)
+	{
+		ATaskPlayerState* TPS = TPC->GetPlayerState<ATaskPlayerState>();
+		if (IsValid(TPS) == true)
+		{
+			TPS->ResetGuessCount();
+		}
+	}
+}
+
+void ATaskGameModeBase::JudgeGame(ATaskPlayerController* InChattingPlayerController, int InStrikeCount)
+{
+	if (3 == InStrikeCount)
+	{
+		ATaskPlayerState* TPS = InChattingPlayerController->GetPlayerState<ATaskPlayerState>();
+		for (const auto& TPC : AllPlayerControllers)
+		{
+			if (IsValid(TPS) == true)
+			{
+				FString CombinedMessageString = TPS->GetPlayerName() + TEXT(" has won the game.");
+				TPC->NotificationText = FText::FromString(CombinedMessageString);
+
+				ResetGame();
+			}
+		}
+	}
+	else
+	{
+		bool bIsDraw = true;
+		for (const auto& TPC : AllPlayerControllers)
+		{
+			ATaskPlayerState* TPS = TPC->GetPlayerState<ATaskPlayerState>();
+			if (IsValid(TPS) == true)
+			{
+				if (TPS->GetPlayerNowGuessCount() < TPS->GetPlayerMaxGuessCount())
+				{
+					bIsDraw = false;
+					break;
+				}
+			}
+		}
+
+		if (true == bIsDraw)
+		{
+			for (const auto& CXPlayerController : AllPlayerControllers)
+			{
+				CXPlayerController->NotificationText = FText::FromString(TEXT("Draw..."));
+
+				ResetGame();
+			}
+		}
 	}
 }

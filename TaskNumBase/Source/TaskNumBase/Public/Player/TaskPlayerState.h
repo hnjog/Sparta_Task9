@@ -30,10 +30,12 @@ public:
 	FORCEINLINE int32 GetPlayerNowGuessCount() { return CurrentGuessCount; }
 	FORCEINLINE int32 GetPlayerMaxGuessCount() { return MaxGuessCount; }
 
+	FORCEINLINE void ResetGuessCount() { CurrentGuessCount = 0; }
+
 public:
 	bool AddGuessCount();
 
-public:
+protected:
 	UPROPERTY(Replicated)
 	FString PlayerNameString;
 
