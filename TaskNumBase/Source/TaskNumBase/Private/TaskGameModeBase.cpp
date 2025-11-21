@@ -14,6 +14,8 @@ void ATaskGameModeBase::OnPostLogin(AController* NewPlayer)
 	ATaskPlayerController* TPC = Cast<ATaskPlayerController>(NewPlayer);
 	if (IsValid(TPC) == true)
 	{
+		TPC->NotificationText = FText::FromString(TEXT("Connected to the game server."));
+
 		AllPlayerControllers.Add(TPC);
 
 		ATaskPlayerState* TPS = TPC->GetPlayerState<ATaskPlayerState>();

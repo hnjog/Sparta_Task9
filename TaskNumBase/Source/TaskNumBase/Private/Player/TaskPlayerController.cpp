@@ -8,6 +8,12 @@
 #include "Kismet/GameplayStatics.h"
 #include "TaskGameModeBase.h"
 #include "Player/TaskPlayerState.h"
+#include "Net/UnrealNetwork.h"
+
+ATaskPlayerController::ATaskPlayerController()
+{
+	bReplicates = true;
+}
 
 void ATaskPlayerController::BeginPlay()
 {
@@ -29,6 +35,22 @@ void ATaskPlayerController::BeginPlay()
 			ChatInputWidgetInstance->AddToViewport();
 		}
 	}
+
+	if (IsValid(NotificationTextWidgetClass) == true)
+	{
+		NotificationTextWidgetInstance = CreateWidget<UUserWidget>(this, NotificationTextWidgetClass);
+		if (IsValid(NotificationTextWidgetInstance) == true)
+		{
+			NotificationTextWidgetInstance->AddToViewport();
+		}
+	}
+}
+
+void ATaskPlayerController::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(ThisClass, NotificationText);
 }
 
 void ATaskPlayerController::SetChatMessageString(const FString& InChatMessageString)
