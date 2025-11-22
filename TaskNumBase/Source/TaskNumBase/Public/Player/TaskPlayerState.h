@@ -30,6 +30,7 @@ public:
 	FORCEINLINE int32 GetPlayerNowGuessCount() { return CurrentGuessCount; }
 	FORCEINLINE int32 GetPlayerMaxGuessCount() { return MaxGuessCount; }
 
+	FORCEINLINE bool CanGuess() { return CurrentGuessCount < MaxGuessCount; }
 	FORCEINLINE void ResetGuessCount() { CurrentGuessCount = 0; }
 
 public:

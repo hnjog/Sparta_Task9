@@ -89,10 +89,21 @@ void ATaskPlayerController::ServerRPCPrintChatMessageString_Implementation(const
 	AGameModeBase* GM = UGameplayStatics::GetGameMode(this);
 	if (IsValid(GM) == true)
 	{
-		ATaskGameModeBase* TGM = Cast<ATaskGameModeBase>(GM);
-		if (IsValid(TGM) == true)
+		ATaskPlayerState* TPS = GetPlayerState<ATaskPlayerState>();
+		if (IsValid(TPS) == true)
 		{
-			TGM->PrintChatMessageString(this, InChatMessageString);
+			if (TPS->CanGuess())
+			{
+				ATaskGameModeBase* TGM = Cast<ATaskGameModeBase>(GM);
+				if (IsValid(TGM) == true)
+				{
+					TGM->PrintChatMessageString(this, InChatMessageString);
+				}
+			}
+			else
+			{
+				PrintChatMessageString(TEXT("Use All Guess Count!!!"));
+			}
 		}
 	}
 }
