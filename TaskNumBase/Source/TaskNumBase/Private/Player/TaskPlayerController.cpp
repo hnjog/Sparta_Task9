@@ -107,3 +107,8 @@ void ATaskPlayerController::ServerRPCPrintChatMessageString_Implementation(const
 		}
 	}
 }
+
+const FText& ATaskPlayerController::GetNotificationText()
+{
+	return NotificationText;
+}

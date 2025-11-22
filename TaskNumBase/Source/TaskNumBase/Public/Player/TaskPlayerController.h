@@ -37,8 +37,13 @@ public:
 	void ServerRPCPrintChatMessageString(const FString& InChatMessageString);
 
 public:
-	UPROPERTY(Replicated, BlueprintReadOnly)
-	FText NotificationText;
+	UFUNCTION(BlueprintCallable,BlueprintPure)
+	const FText& GetNotificationText();
+
+	FORCEINLINE void SetNotificationText(const FText& NotiText)
+	{
+		NotificationText = NotiText;
+	}
 
 protected:
 	UPROPERTY(EditDefaultsOnly)
@@ -53,6 +58,8 @@ protected:
 	UPROPERTY()
 	TObjectPtr<UUserWidget> NotificationTextWidgetInstance;
 
-	FString ChatMessageString;
+	UPROPERTY(Replicated, BlueprintReadOnly)
+	FText NotificationText;
 
+	FString ChatMessageString;
 };

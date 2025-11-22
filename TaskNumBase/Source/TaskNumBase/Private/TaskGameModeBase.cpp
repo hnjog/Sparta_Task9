@@ -14,7 +14,7 @@ void ATaskGameModeBase::OnPostLogin(AController* NewPlayer)
 	ATaskPlayerController* TPC = Cast<ATaskPlayerController>(NewPlayer);
 	if (IsValid(TPC) == true)
 	{
-		TPC->NotificationText = FText::FromString(TEXT("Connected to the game server."));
+		TPC->SetNotificationText(FText::FromString(TEXT("Connected to the game server.")));
 
 		AllPlayerControllers.Add(TPC);
 
@@ -198,7 +198,7 @@ void ATaskGameModeBase::JudgeGame(ATaskPlayerController* InChattingPlayerControl
 			if (IsValid(TPS) == true)
 			{
 				FString CombinedMessageString = TPS->GetPlayerName() + TEXT(" has won the game.");
-				TPC->NotificationText = FText::FromString(CombinedMessageString);
+				TPC->SetNotificationText(FText::FromString(CombinedMessageString));
 
 				ResetGame();
 			}
@@ -222,9 +222,9 @@ void ATaskGameModeBase::JudgeGame(ATaskPlayerController* InChattingPlayerControl
 
 		if (true == bIsDraw)
 		{
-			for (const auto& CXPlayerController : AllPlayerControllers)
+			for (const auto& TPC : AllPlayerControllers)
 			{
-				CXPlayerController->NotificationText = FText::FromString(TEXT("Draw..."));
+				TPC->SetNotificationText(FText::FromString(TEXT("Draw...")));
 
 				ResetGame();
 			}
