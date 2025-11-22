@@ -37,8 +37,6 @@ void ATaskGameModeBase::BeginPlay()
 	Super::BeginPlay();
 
 	SecretNumberString = GenerateSecretNumber();
-
-	UE_LOG(LogTemp, Error, TEXT("%s"), *SecretNumberString);
 }
 
 FString ATaskGameModeBase::GenerateSecretNumber()
@@ -186,6 +184,8 @@ void ATaskGameModeBase::ResetGame()
 			TPS->ResetGuessCount();
 		}
 	}
+
+	UE_LOG(LogTemp, Error, TEXT("%s"), *SecretNumberString);
 }
 
 void ATaskGameModeBase::JudgeGame(ATaskPlayerController* InChattingPlayerController, int InStrikeCount)
