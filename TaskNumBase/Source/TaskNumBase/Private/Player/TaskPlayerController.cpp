@@ -102,7 +102,7 @@ void ATaskPlayerController::ServerRPCPrintChatMessageString_Implementation(const
 			}
 			else
 			{
-				PrintChatMessageString(TEXT("Use All Guess Count!!!"));
+				ClientRPCPrintChatMessageString(TEXT("Use All Guess Count!!!"));
 			}
 		}
 	}
