@@ -24,13 +24,13 @@ void ATaskPlayerState::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty
 
 FString ATaskPlayerState::GetPlayerInfoString()
 {
-	FString PlayerInfoString = PlayerNameString + TEXT("(") + FString::FromInt(CurrentGuessCount) + TEXT("/") + FString::FromInt(MaxGuessCount) + TEXT(")");
+	FString PlayerInfoString = PlayerNameString + TEXT("(") + FString::FromInt(CurrentGuessCount + 1) + TEXT("/") + FString::FromInt(MaxGuessCount) + TEXT(")");
 	return PlayerInfoString;
 }
 
 bool ATaskPlayerState::AddGuessCount()
 {
-	if(CurrentGuessCount >= MaxGuessCount )
+	if(CurrentGuessCount >= MaxGuessCount)
 		return false;
 
 	CurrentGuessCount++;
