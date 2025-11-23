@@ -33,6 +33,9 @@ public:
 	FORCEINLINE bool CanGuess() { return CurrentGuessCount < MaxGuessCount; }
 	FORCEINLINE void ResetGuessCount() { CurrentGuessCount = 0; }
 
+	FORCEINLINE bool IsMyTurn() { return bMyTurn; }
+	FORCEINLINE void SetTurn() { bMyTurn = true; }
+	FORCEINLINE void EndTurn() { bMyTurn = false; }
 public:
 	bool AddGuessCount();
 
@@ -45,4 +48,10 @@ protected:
 
 	UPROPERTY(Replicated)
 	int32 MaxGuessCount;
+
+	// 지금 이거 동기화가 잘 안됨
+	// 따라서 '턴 시작'에 관련된 부분을 OnRef로 냅두는 것이 좋음
+	// 
+	UPROPERTY(Replicated)
+	bool bMyTurn;
 };

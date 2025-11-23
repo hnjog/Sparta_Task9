@@ -30,13 +30,16 @@ void ATaskGameModeBase::OnPostLogin(AController* NewPlayer)
 			TaskGameStateBase->MulticastRPCBroadcastLoginMessage(TPS->GetPlayerName());
 		}
 	}
+
+	if (AllPlayerControllers.Num() >= 2)
+	{
+		ResetGame();
+	}
 }
 
 void ATaskGameModeBase::BeginPlay()
 {
 	Super::BeginPlay();
-
-	SecretNumberString = GenerateSecretNumber();
 }
 
 FString ATaskGameModeBase::GenerateSecretNumber()
@@ -175,6 +178,7 @@ void ATaskGameModeBase::IncreaseGuessCount(ATaskPlayerController* InChattingPlay
 void ATaskGameModeBase::ResetGame()
 {
 	SecretNumberString = GenerateSecretNumber();
+	TurnPlayerIdx = 0;
 
 	for (const auto& TPC : AllPlayerControllers)
 	{
@@ -182,10 +186,13 @@ void ATaskGameModeBase::ResetGame()
 		if (IsValid(TPS) == true)
 		{
 			TPS->ResetGuessCount();
+			TPS->EndTurn();
 		}
 	}
 
 	UE_LOG(LogTemp, Error, TEXT("%s"), *SecretNumberString);
+
+	StartTurn();
 }
 
 void ATaskGameModeBase::JudgeGame(ATaskPlayerController* InChattingPlayerController, int InStrikeCount)
@@ -200,9 +207,9 @@ void ATaskGameModeBase::JudgeGame(ATaskPlayerController* InChattingPlayerControl
 				FString CombinedMessageString = TPS->GetPlayerName() + TEXT(" has won the game.");
 				TPC->SetNotificationText(FText::FromString(CombinedMessageString));
 
-				ResetGame();
 			}
 		}
+		ResetGame();
 	}
 	else
 	{
@@ -225,9 +232,112 @@ void ATaskGameModeBase::JudgeGame(ATaskPlayerController* InChattingPlayerControl
 			for (const auto& TPC : AllPlayerControllers)
 			{
 				TPC->SetNotificationText(FText::FromString(TEXT("Draw...")));
-
-				ResetGame();
 			}
+			ResetGame();
+		}
+		else
+		{
+			StartTurn();
+		}
+	}
+}
+
+void ATaskGameModeBase::StartTurn()
+{
+	if (IsValid(AllPlayerControllers[TurnPlayerIdx]))
+	{
+		ATaskPlayerState* TPS = AllPlayerControllers[TurnPlayerIdx]->GetPlayerState<ATaskPlayerState>();
+		if (IsValid(TPS))
+		{
+			UE_LOG(LogTemp, Error, TEXT("Turn Player : %s"), *TPS->GetPlayerName());
+			TPS->SetTurn();
+		}
+	}
+
+	GetWorldTimerManager().SetTimer(
+		TurnHandle,
+		this,
+		&ATaskGameModeBase::TickTurnTimer,
+		1.f,
+		true
+	);
+}
+
+void ATaskGameModeBase::TickTurnTimer()
+{
+	ATaskGameStateBase* TaskGameStateBase = GetGameState<ATaskGameStateBase>();
+	if (IsValid(TaskGameStateBase) == true)
+	{
+		TaskGameStateBase->TimeGone();
+		if (TaskGameStateBase->IsTurnEnd())
+		{
+			TurnEnd();
+
+			ATaskPlayerState* TPS = AllPlayerControllers[TurnPlayerIdx]->GetPlayerState<ATaskPlayerState>();
+			if (IsValid(TPS))
+			{
+				TPS->AddGuessCount();
+			}
+		}
+
+		UpdateTimeText();
+	}
+}
+
+void ATaskGameModeBase::TurnEnd()
+{
+	if (IsValid(AllPlayerControllers[TurnPlayerIdx]))
+	{
+		ATaskPlayerState* TPS = AllPlayerControllers[TurnPlayerIdx]->GetPlayerState<ATaskPlayerState>();
+		if (IsValid(TPS))
+		{
+			UE_LOG(LogTemp, Error, TEXT("%s : End Turn!"), *TPS->GetPlayerName());
+			TPS->EndTurn();
+		}
+	}
+
+	ATaskGameStateBase* TaskGameStateBase = GetGameState<ATaskGameStateBase>();
+	if (IsValid(TaskGameStateBase) == true)
+	{
+		TaskGameStateBase->ResetTime();
+		UpdateTimeText();
+	}
+
+	TurnPlayerIdx++;
+	if (TurnPlayerIdx >= AllPlayerControllers.Num())
+		TurnPlayerIdx = 0;
+
+	GetWorldTimerManager().ClearTimer(TurnHandle);
+	TurnHandle.Invalidate();
+}
+
+void ATaskGameModeBase::UpdateTimeText()
+{
+	ATaskGameStateBase* TaskGameStateBase = GetGameState<ATaskGameStateBase>();
+	if (IsValid(TaskGameStateBase) == false)
+	{
+		return;
+	}
+
+	ATaskPlayerState* TPS = AllPlayerControllers[TurnPlayerIdx]->GetPlayerState<ATaskPlayerState>();
+	if (IsValid(TPS))
+	{
+		for (int32 i = 0; i < AllPlayerControllers.Num();i++)
+		{
+			ATaskPlayerController* TPC = AllPlayerControllers[i];
+			FString TimerText;
+
+			if (i == TurnPlayerIdx)
+			{
+				TimerText += "My Turn - ";
+			}
+			else
+			{
+				TimerText += TPS->GetPlayerName();
+			}
+
+			TimerText += TEXT(" RemainTime : ") + FString::FromInt(TaskGameStateBase->GetRemainTime());
+			TPC->SetTimerText(FText::FromString(TimerText));
 		}
 	}
 }

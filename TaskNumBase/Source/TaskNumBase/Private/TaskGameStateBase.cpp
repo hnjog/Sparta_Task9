@@ -5,6 +5,7 @@
 
 #include "Kismet/GameplayStatics.h"
 #include "Player/TaskPlayerController.h"
+#include "Net/UnrealNetwork.h"
 
 void ATaskGameStateBase::MulticastRPCBroadcastLoginMessage_Implementation(const FString& InNameString)
 {
@@ -21,4 +22,17 @@ void ATaskGameStateBase::MulticastRPCBroadcastLoginMessage_Implementation(const 
 			}
 		}
 	}
+}
+
+ATaskGameStateBase::ATaskGameStateBase()
+	:MaxTurnCount(30),
+	RemainTurnCount(30)
+{
+}
+
+void ATaskGameStateBase::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(ThisClass, RemainTurnCount);
 }

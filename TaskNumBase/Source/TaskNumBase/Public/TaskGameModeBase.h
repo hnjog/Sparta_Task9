@@ -31,10 +31,21 @@ public:
 	void IncreaseGuessCount(ATaskPlayerController* InChattingPlayerController);
 
 	void ResetGame();
+	void TurnEnd();
 
+protected:
 	void JudgeGame(ATaskPlayerController* InChattingPlayerController, int InStrikeCount);
+
+	void StartTurn();
+	void TickTurnTimer();
+	
+	void UpdateTimeText();
+
 protected:
 	FString SecretNumberString;
 
 	TArray<TObjectPtr<ATaskPlayerController>> AllPlayerControllers;
+
+	int32 TurnPlayerIdx;
+	FTimerHandle TurnHandle;
 };

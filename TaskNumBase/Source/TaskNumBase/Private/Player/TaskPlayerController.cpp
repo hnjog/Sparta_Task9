@@ -9,6 +9,7 @@
 #include "TaskGameModeBase.h"
 #include "Player/TaskPlayerState.h"
 #include "Net/UnrealNetwork.h"
+#include "TaskGameStateBase.h"
 
 ATaskPlayerController::ATaskPlayerController()
 {
@@ -44,6 +45,15 @@ void ATaskPlayerController::BeginPlay()
 			NotificationTextWidgetInstance->AddToViewport();
 		}
 	}
+
+	if (IsValid(TimeWidgetClass) == true)
+	{
+		TimeWidgetInstance = CreateWidget<UUserWidget>(this, TimeWidgetClass);
+		if (IsValid(TimeWidgetInstance) == true)
+		{
+			TimeWidgetInstance->AddToViewport();
+		}
+	}
 }
 
 void ATaskPlayerController::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
@@ -51,6 +61,7 @@ void ATaskPlayerController::GetLifetimeReplicatedProps(TArray<class FLifetimePro
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(ThisClass, NotificationText);
+	DOREPLIFETIME(ThisClass, TimeText);
 }
 
 void ATaskPlayerController::SetChatMessageString(const FString& InChatMessageString)
@@ -92,17 +103,23 @@ void ATaskPlayerController::ServerRPCPrintChatMessageString_Implementation(const
 		ATaskPlayerState* TPS = GetPlayerState<ATaskPlayerState>();
 		if (IsValid(TPS) == true)
 		{
-			if (TPS->CanGuess())
-			{
-				ATaskGameModeBase* TGM = Cast<ATaskGameModeBase>(GM);
-				if (IsValid(TGM) == true)
-				{
-					TGM->PrintChatMessageString(this, InChatMessageString);
-				}
-			}
-			else
+			if (TPS->CanGuess() == false)
 			{
 				ClientRPCPrintChatMessageString(TEXT("Use All Guess Count!!!"));
+				return;
+			}
+			
+			if (TPS->IsMyTurn() == false)
+			{
+				ClientRPCPrintChatMessageString(TEXT("Not Your Turn!!!"));
+				return;
+			}
+
+			ATaskGameModeBase* TGM = Cast<ATaskGameModeBase>(GM);
+			if (IsValid(TGM) == true)
+			{
+				TGM->TurnEnd();
+				TGM->PrintChatMessageString(this, InChatMessageString);
 			}
 		}
 	}
@@ -111,4 +128,9 @@ void ATaskPlayerController::ServerRPCPrintChatMessageString_Implementation(const
 const FText& ATaskPlayerController::GetNotificationText()
 {
 	return NotificationText;
+}
+
+const FText& ATaskPlayerController::GetTimerText()
+{
+	return TimeText;
 }

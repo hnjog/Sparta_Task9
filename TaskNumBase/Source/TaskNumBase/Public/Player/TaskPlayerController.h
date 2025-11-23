@@ -45,6 +45,13 @@ public:
 		NotificationText = NotiText;
 	}
 
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	const FText& GetTimerText();
+
+	FORCEINLINE void SetTimerText(const FText& TimerText)
+	{
+		TimeText = TimerText;
+	}
 protected:
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UTaskChatInput> ChatInputWidgetClass;
@@ -58,8 +65,17 @@ protected:
 	UPROPERTY()
 	TObjectPtr<UUserWidget> NotificationTextWidgetInstance;
 
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<UUserWidget> TimeWidgetClass;
+
+	UPROPERTY()
+	TObjectPtr<UUserWidget> TimeWidgetInstance;
+
 	UPROPERTY(Replicated, BlueprintReadOnly)
 	FText NotificationText;
+
+	UPROPERTY(Replicated, BlueprintReadOnly)
+	FText TimeText;
 
 	FString ChatMessageString;
 };

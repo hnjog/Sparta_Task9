@@ -20,6 +20,7 @@ void ATaskPlayerState::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty
 	DOREPLIFETIME(ThisClass, PlayerNameString);
 	DOREPLIFETIME(ThisClass, CurrentGuessCount);
 	DOREPLIFETIME(ThisClass, MaxGuessCount);
+	DOREPLIFETIME(ThisClass, bMyTurn);
 }
 
 FString ATaskPlayerState::GetPlayerInfoString()
