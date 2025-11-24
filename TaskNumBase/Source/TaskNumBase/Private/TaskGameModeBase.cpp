@@ -271,13 +271,14 @@ void ATaskGameModeBase::TickTurnTimer()
 		TaskGameStateBase->TimeGone();
 		if (TaskGameStateBase->IsTurnEnd())
 		{
-			TurnEnd();
-
 			ATaskPlayerState* TPS = AllPlayerControllers[TurnPlayerIdx]->GetPlayerState<ATaskPlayerState>();
 			if (IsValid(TPS))
 			{
 				TPS->AddGuessCount();
 			}
+
+			TurnEnd();
+			StartTurn();
 		}
 
 		UpdateTimeText();
